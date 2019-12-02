@@ -1,13 +1,218 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:500,600&display=swap');
 body {
+  background: #f2f2f2;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+}
+input:focus, button:focus {
+  outline: none;
+}
+button[disabled] {
+  background: #f2f2f2;
+  color: grey;
+}
+.title {
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  margin: 2em 0 0.2em 0;
+  letter-spacing: 0.5px;
+}
+.total_items {
+  text-align: center;
+  display: block;
+  margin: auto;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  color: grey;
+  font-size: 16.5px;
+}
+.items_content {
+  width: 100%;
+  max-width: 580px;
+  margin: auto;
+}
+.items_content ul {
+  margin-top: 3em;
+  list-style: none;
+  padding: 0;
+}
+.items_content ul li {
+  background-color: #FFF;
+  padding: 20px;
+  font-size: 17px;
+  margin-bottom: 15px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  border-radius: 6px;
+  box-shadow: 0 5px 15px 1px rgba(50, 50, 50, 0.05);
+}
+.items_content ul li button {
+  border: none;
+  background: transparent;
+  vertical-align: middle;
+  float: right;
+  opacity: 0.3;
+  cursor: pointer;
+}
+.items_content ul li button:hover {
+  opacity: 0.8;
+}
+.items_content ul li button:focus {
+  outline: none;
+}
+.btn_open-modal {
+  width: 100%;
+  padding: 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 17px;
+  color: #fff;
+  background: #3da8f8;
+  margin-top: 1.5em;
+  cursor: pointer;
+}
+.btn_open-modal:focus {
+  outline: none;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+}
+
+.animated {
+  -webkit-animation-duration: 0.3s;
+  animation-duration: 0.3s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.modal-window {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 99999;
+  -webkit-transition: opacity 100ms ease-in;
+  -moz-transition: opacity 100ms ease-in;
+  transition: opacity 100ms ease-in;
+}
+.modal-window > div {
+  width: 400px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  padding: 2em;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 1px 4px 8px rgba(0,0,0,.1);
+}
+.modal-window header {
+  font-weight: bold;
+}
+.modal-window h1 {
+  font-size: 150%;
+  margin: 0 0 15px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+.content_input {
+  margin: 2em auto;
+  display: block;
+  text-align: center;
+}
+.input {
+  padding: 15px 14px;
+  font-size: 15px;
+  width: 94%;
+  border-radius: 4px;
+  border: 1px solid #e5e5e5;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+.input:focus {
+  outline: none;
+}
+.btns_actions {
+  display: flex;
+  justify-content: space-between;
+}
+.btn-cancel {
+  padding: 10px 35px;
+  border: 1px solid #e5e5e5;
+  background: transparent;
+  font-size: 15px;
+  font-family: 'Poppins';
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-add {
+  padding: 10px 35px;
+  border: none;
+  background: #3da8f8;
+  color: #fff;
+  font-size: 15px;
+  font-family: 'Poppins';
+  border-radius: 4px;
+  cursor: pointer;
+}
+.empty {
+  text-align: center;
+  border: 1px dashed rgb(224, 224, 224);
+  padding: 20px;
+  border-radius: 4px;
+  color: grey;
+  font-family: 'Poppins';
+  margin: 2em 0;
+}
+.lds-dual-ring {
+  position: relative;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 21px;
+  height: 21px;
+  margin: 8px;
+  border-radius: 50%;
+  float: right;
+  position: relative;
+  top: -36px;
+  border: 3px solid #333;
+  border-color: #333 transparent #333 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

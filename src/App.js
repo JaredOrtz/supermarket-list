@@ -1,26 +1,75 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { deleteItem, getItems } from './api'
+import { ModalAddItem } from './components/ModalAddItem'
+import { Empty } from './components/Empty'
+import { Item } from './components/Item'
 
-function App() {
+export const App = () => {
+  const c = console.log,
+        ls = localStorage;
+    
+  const [ listItems, setListItems] = useState( 
+    ls.getItem('items') === null ? [] : [...JSON.parse(ls.getItem('items'))]
+  )
+
+  const handleDeleteItem = (i) => {
+    // Eliminamos el item del localStorage
+    deleteItem(i)
+      .then(newList => { 
+        setListItems([...newList]) 
+      })
+      .catch(error => c(error))
+  }
+
+  const [ modalIsOpen, setModalIsOpen ] = useState(false)
+
+  const onCloseModal = () => {
+    setModalIsOpen(false)
+  }
+
+  const openModal = () => {
+    setModalIsOpen(true)
+  }
+
+  const getNewItem = (item) =>{
+    setListItems([...item])
+    // Cerramos Modal
+    onCloseModal()
+    c(ls.getItem('items'))
+    c([...JSON.parse(ls.getItem('items'))])
+    getItems().then(data => JSON.parse(data))
+  }
+
+  const renderItems = () => {
+    if(listItems.length !== 0) {
+      return (
+          <ul>
+            {
+              listItems.map((item, i) => <Item 
+              key={i} 
+              item={item} 
+              i={i} 
+              handleDeleteItem={handleDeleteItem}
+              /> )
+            }
+          </ul>
+      )
+    } else {
+      return (
+        <Empty />
+      )
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 className="title">Supermarket List</h1>
+      <small className="total_items">{listItems.length} ITEMS</small>
+      <div className="items_content">
+        {renderItems()}
+        <button className="btn_open-modal" onClick={openModal} >Add item</button>
+      </div>
+      <ModalAddItem isOpen={modalIsOpen} onClose={onCloseModal} callback={getNewItem} />
     </div>
   );
 }
-
-export default App;
