@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
-import { deleteItem, getItems } from './api'
+import React, { useEffect, useState } from 'react';
+import { getItems } from './api'
 import { ModalAddItem } from './components/ModalAddItem'
 import { Empty } from './components/Empty'
 import { Item } from './components/Item'
+import { LoaderItems } from './components/LoaderItems'
 
 export const App = () => {
-  const c = console.log,
-        ls = localStorage;
-    
-  const [ listItems, setListItems] = useState( 
-    ls.getItem('items') === null ? [] : [...JSON.parse(ls.getItem('items'))]
-  )
+  const [ listItems, setListItems] = useState([])
 
-  const handleDeleteItem = (i) => {
-    // Eliminamos el item del localStorage
-    deleteItem(i)
-      .then(newList => { 
-        setListItems([...newList]) 
-      })
-      .catch(error => c(error))
+  const [ loading, setLoading ] = useState(false)
+  useEffect(() => {
+    setLoading(true)
+    getItems()
+      .then(data => {
+        setListItems(JSON.parse(data))
+        setLoading(false)
+      }).catch(error => console.log(error))
+  }, [])
+
+  const handleDeleteItem = (newList) => {
+    // Recibimos la nueva lista de items
+    setListItems([...newList]) 
+    setLoading(false)
   }
 
   const [ modalIsOpen, setModalIsOpen ] = useState(false)
@@ -35,12 +38,12 @@ export const App = () => {
     setListItems([...item])
     // Cerramos Modal
     onCloseModal()
-    c(ls.getItem('items'))
-    c([...JSON.parse(ls.getItem('items'))])
-    getItems().then(data => JSON.parse(data))
   }
 
   const renderItems = () => {
+    if(loading && listItems.length === 0) {
+      return <LoaderItems />
+    }
     if(listItems.length !== 0) {
       return (
           <ul>
@@ -66,10 +69,12 @@ export const App = () => {
       <h1 className="title">Supermarket List</h1>
       <small className="total_items">{listItems.length} ITEMS</small>
       <div className="items_content">
-        {renderItems()}
-        <button className="btn_open-modal" onClick={openModal} >Add item</button>
+        {
+          renderItems()
+        }
+        <button className="btn_open-modal" onClick={openModal} data-cy="openModal" >Add item</button>
       </div>
-      <ModalAddItem isOpen={modalIsOpen} onClose={onCloseModal} callback={getNewItem} />
+      <ModalAddItem isOpen={modalIsOpen} onClose={onCloseModal} onAddItem={getNewItem} />
     </div>
   );
 }

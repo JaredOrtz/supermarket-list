@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { addItem } from '../api';
 
-export const ModalAddItem = (props) => {
-
-    const { isOpen, onClose } = props;
+export const ModalAddItem = ({ isOpen, onClose, onAddItem }) => {
 
     const [ item, setItemValue ] = useState('')
 
-    const hanldeChange = (e) => {
+    const handleChange = (e) => {
         setItemValue(e.target.value)
     }
 
@@ -18,15 +16,18 @@ export const ModalAddItem = (props) => {
     }
 
     const [ loading, setLoading ] = useState(false)
+    const [ inputDisabled, setInputDisabled ] = useState(false)
 
     const handleAddItem = (e) => {
         e.preventDefault();
+        setInputDisabled(true)
         setLoading(true)
        // Function API
         addItem(item)
             .then(newItem => {
                 setLoading(false)
-                props.callback(newItem)
+                onAddItem(newItem)
+                setInputDisabled(false)
             })
             .catch(error => console.log(error))
 
@@ -44,14 +45,14 @@ export const ModalAddItem = (props) => {
                 <h1>Add item</h1>
                 <form>
                     <div className="content_input">
-                        <input className="input" type="text" onChange={hanldeChange} value={item} autoFocus />
+                        <input className="input" data-cy="input" type="text" onChange={handleChange} value={item} autoFocus disabled={inputDisabled ? true : false} />
                     </div>
                     <div className="btns_actions">
                         <div>
-                            <button type="button" onClick={onCloseModal} className="btn-cancel" >Cancel</button>
+                            <button type="button" onClick={onCloseModal} className="btn-cancel">Cancel</button>
                         </div>
                         <div>
-                            <button type="submit" onClick={handleAddItem} className="btn-add" disabled={item ? false : true} >
+                            <button type="submit" onClick={handleAddItem} className="btn-add" data-cy="addItem" disabled={item ? false : true}>
                                 {
                                     loading ? 'Agregando...' : 'Add'
                                 }

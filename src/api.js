@@ -3,28 +3,21 @@ const ls = localStorage;
 
 export const getItems = () => {
     return new Promise( async (resolve, reject) => {
-        if(ls.getItem('items') != null) {
-            await delay(2000);
+        if(ls.getItem('items') !== null) {
+            await delay(3000);
             resolve(ls.getItem('items'))
-        } else {
-            reject(new Error('Hubo un error al obtener los items'))
-        }
+        } 
+        reject(new Error('No hay Items'))
     })
 }
 
 export const addItem = (item) => {
     return new Promise( async (resolve, reject) => {
-        if(ls.getItem('items') == null) {
-            const items = []
+        if(item){
+            const items = ls.getItem('items') ? JSON.parse(ls.getItem('items')) : []
+            await delay(1500);
             items.push(item)
             ls.setItem('items', JSON.stringify(items))
-            await delay(1500);
-            resolve([...items])
-        } else {
-            const items = JSON.parse(ls.getItem('items'))
-            items.push(item)
-            ls.setItem('items', JSON.stringify(items))
-            await delay(1500);
             resolve([...items])
         }
         reject(new Error('No hay nada que agregar'))
@@ -36,7 +29,7 @@ export const deleteItem = (i) => {
         const list = JSON.parse(ls.getItem('items'))
         list.splice(i, 1)
         ls.setItem('items', JSON.stringify(list))
-        await delay(800);
+        await delay(1500);
         resolve(list)
         reject(new Error('No hay nada que eliminar'))
     })
